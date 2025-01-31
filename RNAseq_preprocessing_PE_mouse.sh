@@ -213,7 +213,6 @@ alignstatfun (){
 done
 }
 
-
 ls -1 *.bam | alignstatfun | tee -a $LOG_FILE_STEP 2>> $LOG_FILE_STEP
 
 wait;echo -e "(`date`) Step 3.3 calculate stats finished!" | tee -a $LOG_FILE

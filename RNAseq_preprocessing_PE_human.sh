@@ -464,37 +464,9 @@ BAM_LIST=$(ls -1 *.bam)
 parallel -j $TOTAL_PROC_NO --no-notice bcfun {} $WORKING_DIR $NPROC_PER_SAMPLE ::: $BAM_LIST 1>>$LOG_FILE_STEP 2>>$LOG_ERR_FILE
 unset -f bcfun
 
-#trackfun (){
-#    FILE=$1
-#    WORKING_DIR=$2
-#    BASE=$(basename -s '.filtered.bam' $FILE)
-#
-#    if [[ $STRAND == 2 ]]
-#    then
-#        bam2wig.py -i $FILE -s $CHROM_SIZE -t 1000000000 -d '1+-,1-+,2++,2--' -o $WORKING_DIR/$BASE
-#    elif [[ $STRAND == 1 ]]
-#    then
-#        bam2wig.py -i $FILE -s $CHROM_SIZE -t 1000000000 -d '1++,1--,2+-,2-+' -o $WORKING_DIR/$BASE
-#    elif [[ $STRAND == 0 ]]
-#    then
-#        bam2wig.py -i $FILE -s $CHROM_SIZE -t 1000000000 -d 'none' -o $WORKING_DIR/$BASE
-#    fi
-#
-#    wait
-#}
-#
-#
-##ls *.bam | trackfun 1>>$LOG_ERR_FILE 2>>$LOG_FILE
-#export -f trackfun
-#parallel -j $SAMPLE_NO --no-notice trackfun {} $WORKING_DIR ::: $(ls *.bam) 1>>$LOG_ERR_FILE 2>>$LOG_ERR_FILE
-#unset -f trackfun
-
 wait
 
-# echo -e "(`date`)finished tracks & now deleting wig files " | tee -a $LOG_FILE
-
-# cd $WORKING_DIR; rm *.wig
-# wait;echo -e "(`date`) Step 6 finished!" | tee -a $LOG_FILE
+echo -e "(`date`) Step 6 finished!" | tee -a $LOG_FILE
 
 echo -e "############################################################" | tee -a $LOG_FILE
 echo -e "(`date`)Starting Step 7: mutliqc" | tee -a $LOG_FILE
