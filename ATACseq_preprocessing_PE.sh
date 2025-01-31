@@ -16,7 +16,7 @@ echo -e "(`date`) Starting preprocessing... ------------------------------------
 
 # For each element in FASTQ_R1, replace instances of _R1 with _R2
 FASTQ_R2=${FASTQ_R1//_R1/_R2}
-FASTQ_R2=$(echo $FASTQ_R1 | sed 's@_R1@_R2@g')
+FASTQ_R2=$(echo $FASTQ_R2 | sed 's@_R1@_R2@g')
 # 
 
 TOTAL_PROC_NO=$((SAMPLE_NO*NPROC_PER_SAMPLE < $(nproc) ? SAMPLE_NO*NPROC_PER_SAMPLE:$(nproc)-1))
