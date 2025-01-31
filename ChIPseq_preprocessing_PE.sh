@@ -16,7 +16,7 @@ echo -e "(`date`) Starting preprocessing... ------------------------------------
 
 # For each element in FASTQ_R1, replace instances of _R1 with _R2
 FASTQ_R2=${FASTQ_R1//_R1/_R2}
-FASTQ_R2=$(echo $FASTQ_R1 | sed 's@_R1@_R2@g')
+FASTQ_R2=$(echo $FASTQ_R2 | sed 's@_R1@_R2@g')
 # 
 
 TOTAL_PROC_NO=$((SAMPLE_NO*NPROC_PER_SAMPLE < $(nproc) ? SAMPLE_NO*NPROC_PER_SAMPLE:$(nproc)-1))
@@ -39,11 +39,11 @@ for file in $FASTQ_R1 $FASTQ_R2; do
 
 done
 
-# echo -e "### -------------------------------------------------------------------------------------------- ###" | tee -a $LOG_FILE $LOG_ERR_FILE
-# #debug
-# #WORKING_DIR=$PARENT_DIR'/05deDupped/'
-# #LOG_FILE_STEP=$WORKING_DIR"/log.txt"
-# #cd $PARENT_DIR/05deDupped
+echo -e "### -------------------------------------------------------------------------------------------- ###" | tee -a $LOG_FILE $LOG_ERR_FILE
+#debug
+#WORKING_DIR=$PARENT_DIR'/05deDupped/'
+#LOG_FILE_STEP=$WORKING_DIR"/log.txt"
+#cd $PARENT_DIR/05deDupped
 
 cd $PARENT_DIR
 echo -e "###########################################" | tee -a $LOG_FILE
@@ -352,7 +352,6 @@ wait;echo -e "(`date`) Step 5.2 calculate stats finished!" | tee -a $LOG_FILE
 
 echo -e "(`date`)  Step 5 deduplication finished" | tee -a $LOG_FILE
 
-
 echo -e "############################################################" | tee -a $LOG_FILE
 echo -e "(`date`) Starting Step 6: generate genome browser tracks " | tee -a $LOG_FILE
 STEP='06tracks'
@@ -370,10 +369,14 @@ bcfun (){
 
 }
 
+export TMPDIR=/home/shared/tmp
+
 export -f bcfun
 BAM_LIST=$(ls -1 *.bam)
 parallel -j $TOTAL_PROC_NO --no-notice bcfun {} $WORKING_DIR $NPROC_PER_SAMPLE ::: $BAM_LIST 1>>$LOG_FILE_STEP 2>>$LOG_ERR_FILE
 unset -f bcfun
+
+unset TMPDIR
 
 wait; echo -e "(`date`) Step 6: generate genome browser tracks finished" | tee -a $LOG_FILE
 echo -e "############################################################" | tee -a $LOG_FILE
