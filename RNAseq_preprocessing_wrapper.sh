@@ -1,11 +1,26 @@
 #!/bin/bash
 
-# RNAseq_preprocessing.sh - A script to preprocess RNAseq data. Last edited by Allison on 2024/05/06
+# RNAseq_preprocessing.sh - A script to preprocess RNAseq data. Last edited by Allison on 2025/03/21
 # Usage: RNAseq_preprocessing.sh list_of_fastq_paths.txt [/path/to/parent_dir] [nproc_per_sample] [strandness]
 # list_of_fastq_paths.txt: A file with full path to all R1 fastq.gz or fq.gz samples containing _R1. or _1.
 # /path/to/parent_dir: Directory for analysis, default=current directory
 # nproc_per_sample: Number of cores per sample, default=1
 # strandness: Strandness, default=unset (0=unstranded, 1=forward, 2=reverse)
+
+# Print help message
+usage="Usage: $(basename "$0") list_of_fastq_paths.txt [/path/to/parent_dir] [nproc_per_sample] [strandness]
+
+list_of_fastq_paths.txt: A file with full path to all R1 fastq.gz or fq.gz samples containing _R1. or _1.
+/path/to/parent_dir: Directory for analysis, default=current directory
+nproc_per_sample: Number of cores per sample, default=1
+strandness: Strandness, default=unset (0=unstranded, 1=forward, 2=reverse)
+-h: Display this help message"
+
+# Check if the help option is invoked
+if [ "$1" == "-h" ]; then
+    echo "$usage"
+    exit 0
+fi
 
 # Input arguments
 fastq_list=$1 # FIRST ARGUMENT, file with list of full path to all samples ending in _R1/fastq or .fastq.gz
