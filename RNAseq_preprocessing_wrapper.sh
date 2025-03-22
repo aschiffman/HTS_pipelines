@@ -18,7 +18,8 @@ strandness: Strandness, default=unset (0=unstranded, 1=forward, 2=reverse)
 
 # Check if the help option is invoked
 if [ "$1" == "-h" ]; then
-    echo "$usage"
+    echo "
+    $usage"
     exit 0
 fi
 
@@ -30,19 +31,29 @@ strandness=${4:-"100"} # FOURTH ARGUMENT, strandness, default=unset (0=unstrande
 
 # Check if the list of fastq paths file is provided
 if [ "$#" -lt 1 ]; then
-    echo "Usage: $0 list_of_fastq_paths.txt [/path/to/parent_dir] [nproc_per_sample] [strandness]"
+    echo "Error: No fastq paths file provided.
+    
+    $usage"
     exit 1
 fi
 
 # Check if the list of fastq paths file exists
 if [ ! -f "$fastq_list" ]; then
-    echo "Error: The list of fastq paths file does not exist."
+    echo "Error: The fastq paths file does not exist.
+    
+    $usage"
     exit 1
 fi
 
 # Count the number of lines in the list_of_fastq_paths.txt
 total_files=$(wc -l < "$fastq_list")
 batch_size=20
+
+if [ "$total_files" -lt "$batch_size" ]; then
+    ./RNAseq_preprocessing_testing.sh "$fastq_list" "$parent_dir" "$nproc_per_sample"
+    exit 0
+fi
+
 batch_count=$(( (total_files + batch_size - 1) / batch_size ))  # Round up division
 
 # Iterate over each batch
@@ -60,9 +71,9 @@ for ((batch_num=1; batch_num<=batch_count; batch_num++)); do
     # Extract the corresponding lines for this batch and save them to a new file
     sed -n "${start_line},${end_line}p" "$fastq_list" > "$batch_file"
 
-    # # Run RNAseq_preprocessing.sh for this batch
-    # echo "Processing batch ${batch_num} with ${batch_size} files (or less for last batch)..."
-    # ./RNAseq_preprocessing.sh "$batch_file" "$parent_dir" "$nproc_per_sample" "$strandness"
+    # Run RNAseq_preprocessing.sh for this batch
+    echo "Processing batch ${batch_num} with ${batch_size} files (or less for last batch)..."
+    ./RNAseq_preprocessing_testing.sh "$batch_file" "$parent_dir" "$nproc_per_sample" "$batch_count" "$strandness"
 done
 
 echo "All batches processed."
