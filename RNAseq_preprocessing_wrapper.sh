@@ -50,7 +50,7 @@ total_files=$(wc -l < "$fastq_list")
 batch_size=20
 
 if [ "$total_files" -lt "$batch_size" ]; then
-    ./RNAseq_preprocessing_testing.sh "$fastq_list" "$parent_dir" "$nproc_per_sample"
+    /home/shared/pipelines/RNAseq_preprocessing_PE_mouse_testing.sh "$fastq_list" "$parent_dir" "$nproc_per_sample"
     exit 0
 fi
 
@@ -59,7 +59,7 @@ batch_count=$(( (total_files + batch_size - 1) / batch_size ))  # Round up divis
 # Iterate over each batch
 for ((batch_num=1; batch_num<=batch_count; batch_num++)); do
     # Generate the file for this batch
-    batch_file="$(basename "$fastq_list" .txt)_batch${batch_num}.txt"
+    batch_file=$parent_dir/"$(basename "$fastq_list" .txt)_batch${batch_num}.txt"
 
     # Calculate the line range for this batch
     start_line=$(( (batch_num - 1) * batch_size + 1 ))
@@ -73,7 +73,7 @@ for ((batch_num=1; batch_num<=batch_count; batch_num++)); do
 
     # Run RNAseq_preprocessing.sh for this batch
     echo "Processing batch ${batch_num} with ${batch_size} files (or less for last batch)..."
-    ./RNAseq_preprocessing_testing.sh "$batch_file" "$parent_dir" "$nproc_per_sample" "$batch_count" "$strandness"
+    /home/shared/pipelines/RNAseq_preprocessing_PE_mouse_testing.sh "$batch_file" "$parent_dir" "$nproc_per_sample" "$batch_num" "$strandness"
 done
 
 echo "All batches processed."
