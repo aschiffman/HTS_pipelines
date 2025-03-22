@@ -474,7 +474,6 @@ echo -e "(`date`)Starting Step 7: mutliqc" | tee -a $LOG_FILE
 
 
 cd $PARENT_DIR
-rm -rf 07multiqc
 mkdir -p 07multiqc
 
 multiqc . -o ./07multiqc 1>>$LOG_ERR_FILE 2>>$LOG_FILE
